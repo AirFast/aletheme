@@ -17,6 +17,10 @@ $news = [
 
 $id = $_GET['id'];
 $article = $news[$id];
+
+include __DIR__ . '../views/section.php';
+
+$s = __DIR__ . '/views/section.php';
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +31,12 @@ $article = $news[$id];
 </head>
 <body>
 	<h1>Hello, world!</h1>
-  <h2><?php $article['title']; ?></h2>
-	<p><?php echo $article['text']; ?></p>
+	<?php
+	echo $s;
+	$section = new Section();
+	$section->title = $article['title'];
+	$section->text = $article['text'];
+	$section->view();
+	?>
 </body>
 </html>
