@@ -1,13 +1,21 @@
 <?php get_header(); ?>
-
-<h1>It's Index Page</h1>
-<br><br>
+    <h1>It's Archive Page</h1>
     <!-- Content -->
     <div class="blog-center-align">
 
         <!-- Blog Caption -->
         <div class="blog-caption">
-            <div class="blogtitle"><?php _e('Blog Posts','aletheme'); ?></div>
+            <div class="blogtitle">
+                <?php if ( is_day() ) : ?>
+                    <?php printf( __( 'Daily Archives: <span>%s</span>', 'aletheme' ), get_the_date() ); ?>
+                <?php elseif ( is_month() ) : ?>
+                    <?php printf( __( 'Monthly Archives: <span>%s</span>', 'aletheme' ), get_the_date( _x( 'F Y', 'monthly archives date format', 'aletheme' ) ) ); ?>
+                <?php elseif ( is_year() ) : ?>
+                    <?php printf( __( 'Yearly Archives: <span>%s</span>', 'aletheme' ), get_the_date( _x( 'Y', 'yearly archives date format', 'aletheme' ) ) ); ?>
+                <?php else : ?>
+                    <?php _e( 'Blog Archives', 'aletheme' ); ?>
+                <?php endif; ?>
+            </div>
         </div>
 
         <!-- Blog Line -->

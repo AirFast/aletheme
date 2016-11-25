@@ -1,13 +1,10 @@
 <?php get_header(); ?>
-
-<h1>It's Index Page</h1>
-<br><br>
     <!-- Content -->
     <div class="blog-center-align">
 
         <!-- Blog Caption -->
         <div class="blog-caption">
-            <div class="blogtitle"><?php _e('Blog Posts','aletheme'); ?></div>
+            <div class="blogtitle"><?php _e('Author: ','aletheme'); the_author(); ?></div>
         </div>
 
         <!-- Blog Line -->
