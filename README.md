@@ -1,1 +1,3 @@
-# Aletheme framework for WordPress
+# Aletheme
+
+framework for WordPress
