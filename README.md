@@ -1,1 +1,1 @@
-# test
+# Aletheme framework for WordPress
