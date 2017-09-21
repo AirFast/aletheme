@@ -7,6 +7,15 @@
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<title><?php wp_title('|', true, 'right'); bloginfo('name'); ?></title>
 	<?php wp_head(); ?>
+
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#000">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#000">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#000">
+
+    <style>body { opacity: 0; overflow-x: hidden; } html { background-color: #fff; }</style>
 </head>
 <body <?php body_class(); ?> >
 

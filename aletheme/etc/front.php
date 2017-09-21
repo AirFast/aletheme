@@ -37,22 +37,23 @@ add_action('wp_print_scripts', 'ale_init_js_vars');
 /**
  * Enqueue Theme Styles
  */
-function ale_enqueue_styles() {
+function airfast_enqueue_styles() {
 
 	// add main css file
 	wp_register_style( 'aletheme_main_css', THEME_URL . '/css/main.min.css', array(), ALETHEME_THEME_VERSION, 'all');
 	wp_enqueue_style( 'aletheme_main_css' );
 
 	// add libs css file
-	wp_register_style( 'jquery.jscrollpane', THEME_URL . '/css/jquery.jscrollpane.css', array(), ALETHEME_THEME_VERSION, 'all');
-    wp_register_style( 'jquery.fancybox-1.3.4', THEME_URL . '/css/jquery.fancybox-1.3.4.css', array(), ALETHEME_THEME_VERSION, 'all');
+	//wp_register_style( 'jquery.jscrollpane', THEME_URL . '/css/jquery.jscrollpane.css', array(), ALETHEME_THEME_VERSION, 'all');
+    //wp_register_style( 'jquery.fancybox-1.3.4', THEME_URL . '/css/jquery.fancybox-1.3.4.css', array(), ALETHEME_THEME_VERSION, 'all');
 
-    if(is_page_template('template-about.php') or is_page_template('template-award.php')){
-        wp_enqueue_style('jquery.jscrollpane');
-    }
+    //if(is_page_template('template-about.php') or is_page_template('template-award.php')){
+        //wp_enqueue_style('jquery.jscrollpane');
+    //}
 
 }
-add_action( 'wp_enqueue_scripts', 'ale_enqueue_styles' );
+//add_action( 'wp_enqueue_scripts', 'airfast_enqueue_styles' );
+add_action( 'wp_footer', 'airfast_enqueue_styles' );
 
 
 /**

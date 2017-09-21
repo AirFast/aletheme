@@ -999,9 +999,6 @@ body {
   max-width: 100%;
   height: auto; }
 
-p {
-  font-family: "roboto-example", sans-serif; }
-
 /*==========  Desktop First  ==========*/
 /* Large Devices, Wide Screens */
 @media only screen and (max-width: 1200px) {
