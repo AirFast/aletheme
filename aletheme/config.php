@@ -343,6 +343,12 @@ function aletheme_metaboxes($meta_boxes) {
                 'id'   => $prefix . 'datefield',
                 'type' => 'wysiwyg',
             ),
+            array(
+                'name' => 'Text Date',
+                'desc' => 'Insert the text',
+                'id'   => $prefix . 'datefield',
+                'type' => 'file_list',
+            ),
         )
     );
 
