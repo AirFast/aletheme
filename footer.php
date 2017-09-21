@@ -39,7 +39,7 @@
         <?php if (ale_get_option('copyrights')) : ?>
             <p class="right"><?php echo ale_option('copyrights'); ?></p>
         <?php else: ?>
-            <p class="right">&copy; <?php _e('2013 ALL RIGHTS RESERVED', 'aletheme')?></p>
+            <p class="right">&copy; <?php echo date('Y'); ?> <?php _e('ALL RIGHTS RESERVED', 'aletheme')?></p>
         <?php endif; ?>
 
     </nav>

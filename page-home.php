@@ -20,7 +20,7 @@ if ($custom_query->have_posts()) : while ($custom_query->have_posts()) : $custom
 <?php endwhile; endif; ?>
 
 
-<h1>Пагинация для Галерей</h1>
+<h1 class="page-title">Пагинация для Галерей</h1>
 <section>
     <?php //global $query_string; query_posts($query_string.'&posts_per_page=3');
 

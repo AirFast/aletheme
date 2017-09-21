@@ -40,7 +40,7 @@ add_action('wp_print_scripts', 'ale_init_js_vars');
 function ale_enqueue_styles() {
 
 	// add main css file
-	wp_register_style( 'aletheme_main_css', THEME_URL . '/css/main.css', array(), ALETHEME_THEME_VERSION, 'all');
+	wp_register_style( 'aletheme_main_css', THEME_URL . '/css/main.min.css', array(), ALETHEME_THEME_VERSION, 'all');
 	wp_enqueue_style( 'aletheme_main_css' );
 
 	// add libs css file
