@@ -38,9 +38,10 @@ gulp.task('js', ['common-js'], function() {
 
 gulp.task('browser-sync', function() {
 	browserSync({
-		server: {
-			baseDir: 'app'
-		},
+		//server: {
+			//baseDir: 'app'
+		//},
+        proxy: 'wordpres.test.dev', // Specify a domain name
 		notify: false,
 		// tunnel: true,
 		// tunnel: "projectmane", //Demonstration page: http://projectmane.localtunnel.me
