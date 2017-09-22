@@ -24,6 +24,173 @@ function airfast_head_info() {
 }
 add_action('wp_head', 'airfast_head_info');
 
+/**
+ * Get image for Open Graph Meta
+ * @return string
+ */
+function ale_og_meta_image() {
+	echo ale_get_og_meta_image();
+}
+
+function ale_get_og_meta_image() {
+	global $post;
+	$thumbdone = false;
+	$og_image = '';
+
+	//Featured image
+	if (function_exists('get_post_thumbnail_id')) {
+		$attachment_id = get_post_thumbnail_id($post->ID);
+		if ($attachment_id) {
+			$og_image = wp_get_attachment_url($attachment_id, false);
+			$thumbdone = true;
+		}
+	}
+
+	//From post/page content
+	if (!$thumbdone) {
+		$image = ale_parse_first_image($post->post_content);
+		if ($image) {
+			preg_match('~src="([^"]+)"~si', $image, $matches);
+			if (isset($matches[1])) {
+				$image = $matches[1];
+				$pos = strpos($image, site_url());
+				if ($pos === false) {
+					if (stristr($image, 'http://') || stristr($image, 'https://')) {
+						$og_image = $image;
+					} else {
+						$og_image = site_url() . $image;
+					}
+				} else {
+					$og_image = $image;
+				}
+				$thumbdone = true;
+			}
+		}
+	}
+
+	//From media gallery
+	if (!$thumbdone) {
+		$image = ale_get_first_attached_image($post->ID);
+		if ($image) {
+			$og_image = wp_get_attachment_url($image->ID, false);
+			$thumbdone = true;
+		}
+	}
+
+	return $og_image;
+}
+
+
+/**
+ * Add Open Graph Tags to <head>
+ */
+function ale_og_meta() {
+	if (ale_get_option('og_enabled')) {
+
+	$og_type = 'article';
+	$og_locale = get_locale();
+
+	$og_image = '';
+
+	// single page
+	if (is_singular()) {
+		global $post;
+		$og_title = esc_attr(strip_tags(stripslashes($post->post_title)));
+		$og_url = get_permalink();
+		if (trim($post->post_excerpt) != '') {
+			$og_desc = trim($post->post_excerpt);
+		} else {
+			$og_desc = ale_truncate(strip_tags($post->post_content), 240, '...');
+		}
+
+		$og_image = ale_get_og_meta_image();
+
+		if (is_front_page()) {
+			$og_type = 'website';
+		}
+
+	} else {
+		global $wp_query;
+
+		$og_title = get_bloginfo('name');
+		$og_url = site_url();
+		$og_desc = get_bloginfo('description');
+
+		if (is_front_page()) {
+			$og_type = 'website';
+
+		} elseif (is_category()) {
+			$og_title = esc_attr(strip_tags(stripslashes(single_cat_title('', false))));
+			$term = $wp_query->get_queried_object();
+			$og_url = get_term_link($term, $term->taxonomy);
+			$cat_desc = trim(esc_attr(strip_tags(stripslashes(category_description()))));
+			if ($cat_desc) {
+				$og_desc = $cat_desc;
+			}
+
+		} elseif (is_tag()) {
+			$og_title = esc_attr(strip_tags(stripslashes(single_tag_title('', false))));
+			$term = $wp_query->get_queried_object();
+			$og_url = get_term_link($term, $term->taxonomy);
+			$tag_desc = trim(esc_attr(strip_tags(stripslashes(tag_description()))));
+			if (trim($tag_desc) != '') {
+				$og_desc = $tag_desc;
+			}
+
+		} elseif (is_tax()) {
+			$og_title = esc_attr(strip_tags(stripslashes(single_term_title('', false))));
+			$term = $wp_query->get_queried_object();
+			$og_url = get_term_link($term, $term->taxonomy);
+
+		} elseif(is_search()) {
+			$og_title = esc_attr(strip_tags(stripslashes(__('Search for', 'aletheme') . ' "' . get_search_query() . '"')));
+			$og_url = get_search_link();
+
+		} elseif (is_author()) {
+			$og_title = esc_attr(strip_tags(stripslashes(get_the_author_meta('display_name', get_query_var('author')))));
+			$og_url = get_author_posts_url(get_query_var('author'), get_query_var('author_name'));
+
+		} elseif (is_archive()) {
+			if (is_post_type_archive()) {
+				$og_title = esc_attr(strip_tags(stripslashes(post_type_archive_title('', false))));
+				$og_url = get_post_type_archive_link(get_query_var('post_type'));
+			} elseif (is_day()) {
+				$og_title = esc_attr(strip_tags(stripslashes(get_query_var('day') . ' ' . single_month_title(' ', false) . ' ' . __('Archives', 'aletheme'))));
+				$og_url = get_day_link(get_query_var('year'), get_query_var('monthnum'), get_query_var('day'));
+			} elseif (is_month()) {
+				$og_title = esc_attr(strip_tags(stripslashes(single_month_title(' ', false) . ' ' . __('Archives', 'aletheme'))));
+				$og_url = get_month_link(get_query_var('year'), get_query_var('monthnum'));
+			} elseif (is_year()) {
+				$og_title = esc_attr(strip_tags(stripslashes(get_query_var('year') . ' ' . __('Archives', 'aletheme'))));
+				$og_url = get_year_link(get_query_var('year'));
+			}
+
+		} else {
+			// other situations
+		}
+	}
+
+	if (!$og_desc) {
+		$og_desc = $og_title;
+	}
+	?>
+
+	<?php if ( ale_get_option('fb_id')) : ?>
+		<meta property="fb:app_id" content="<?php ale_option('fb_id')?>" />
+	<?php endif; ?>
+	<?php if ($og_image) : ?>
+		<meta property="og:image" content="<?php echo $og_image ?>" />
+	<?php endif; ?>
+	<meta property="og:locale" content="<?php echo $og_locale ?> " />
+	<meta property="og:site_name" content="<?php bloginfo('name') ?>" />
+	<meta property="og:title" content="<?php echo $og_title ?>" />
+	<meta property="og:url" content="<?php echo $og_url ?>" />
+	<meta property="og:type" content="<?php echo $og_type ?>" />
+	<meta property="og:description" content="<?php echo $og_desc ?>" />
+	<?php }
+}
+add_action('wp_head', 'ale_og_meta');
+
 
 /**
  *  Add Theme Custom Css
@@ -251,118 +418,9 @@ function ale_google_analytics() {
 }
 add_action('wp_footer', 'ale_google_analytics');
 
-/**
- * Add Open Graph Tags to <head> 
- */
-function ale_og_meta() {
-	if (ale_get_option('og_enabled')) {
-		
-	$og_type='article';
-	$og_locale = get_locale();
-	
-	$og_image = '';
-	
-	// single page
-	if (is_singular()) {
-		global $post;
-		$og_title = esc_attr(strip_tags(stripslashes($post->post_title)));
-		$og_url = get_permalink();
-		if (trim($post->post_excerpt) != '') {
-			$og_desc = trim($post->post_excerpt);
-		} else {
-			$og_desc = ale_truncate(strip_tags($post->post_content), 240, '...');
-		}
-		
-		$og_image = ale_get_og_meta_image();
-		
-		if (is_front_page()) {
-			$og_type = 'website';
-		}
-		
-	} else {
-		global $wp_query;
-		
-		$og_title = get_bloginfo('name');
-		$og_url = site_url();
-		$og_desc = get_bloginfo('description');
-		
-		if (is_front_page()) {
-			$og_type = 'website';
-			
-		} elseif (is_category()) {
-			$og_title = esc_attr(strip_tags(stripslashes(single_cat_title('', false))));
-			$term = $wp_query->get_queried_object();
-			$og_url = get_term_link($term, $term->taxonomy);
-			$cat_desc = trim(esc_attr(strip_tags(stripslashes(category_description()))));
-			if ($cat_desc) {
-				$og_desc = $cat_desc;
-			}
-			
-		} elseif(is_tag()) {
-			$og_title = esc_attr(strip_tags(stripslashes(single_tag_title('', false))));
-			$term = $wp_query->get_queried_object();
-			$og_url = get_term_link($term, $term->taxonomy);
-			$tag_desc = trim(esc_attr(strip_tags(stripslashes(tag_description()))));
-			if (trim($tag_desc) != '') {
-				$og_desc = $tag_desc;
-			}
-			
-		} elseif (is_tax()) {	
-			$og_title = esc_attr(strip_tags(stripslashes(single_term_title('', false))));
-			$term = $wp_query->get_queried_object();
-			$og_url = get_term_link($term, $term->taxonomy);
-			
-		} elseif(is_search()) {
-			$og_title = esc_attr(strip_tags(stripslashes(__('Search for', 'aletheme') . ' "' . get_search_query() . '"')));
-			$og_url = get_search_link();
-			
-		} elseif (is_author()) {
-			$og_title = esc_attr(strip_tags(stripslashes(get_the_author_meta('display_name', get_query_var('author')))));
-			$og_url = get_author_posts_url(get_query_var('author'), get_query_var('author_name'));
-			
-		} elseif (is_archive()) {
-			if (is_post_type_archive()) {
-				$og_title = esc_attr(strip_tags(stripslashes(post_type_archive_title('', false))));
-				$og_url = get_post_type_archive_link(get_query_var('post_type'));
-			} elseif (is_day()) {
-				$og_title = esc_attr(strip_tags(stripslashes(get_query_var('day') . ' ' . single_month_title(' ', false) . ' ' . __('Archives', 'aletheme'))));
-				$og_url = get_day_link(get_query_var('year'), get_query_var('monthnum'), get_query_var('day'));
-			} elseif (is_month()) {
-				$og_title = esc_attr(strip_tags(stripslashes(single_month_title(' ', false) . ' ' . __('Archives', 'aletheme'))));
-				$og_url = get_month_link(get_query_var('year'), get_query_var('monthnum'));
-			} elseif (is_year()) {
-				$og_title = esc_attr(strip_tags(stripslashes(get_query_var('year') . ' ' . __('Archives', 'aletheme'))));
-				$og_url = get_year_link(get_query_var('year'));
-			}
-			
-		} else {
-			// other situations
-		}
-	}
-	
-	if (!$og_desc) {
-		$og_desc = $og_title;
-	}
-	?>
-	
-	<?php if (ale_get_option('fb_id')) : ?>
-		<meta property="fb:app_id" content="<?php ale_option('fb_id')?>" />
-	<?php endif; ?>
-	<?php if ($og_image) : ?>
-		<meta property="og:image" content="<?php echo $og_image ?>" />
-	<?php endif; ?>
-	<meta property="og:locale" content="<?php echo $og_locale ?> " />
-	<meta property="og:site_name" content="<?php bloginfo('name') ?>" />
-	<meta property="og:title" content="<?php echo $og_title ?>" />
-	<meta property="og:url" content="<?php echo $og_url ?>" />	
-	<meta property="og:type" content="<?php echo $og_type ?>" />
-	<meta property="og:description" content="<?php echo $og_desc ?>" />
-	<?php }
-}
-add_action('wp_head', 'ale_og_meta');
 
 /**
- * Add OpenGraph attributes to html tag
+ * Add Open Graph attributes to html tag
  * @param type $output
  * @return string 
  */
@@ -380,61 +438,6 @@ function ale_add_opengraph_namespace($output) {
 }
 add_filter('language_attributes', 'ale_add_opengraph_namespace',9999);
 
-/**
- * Get image for Open Graph Meta 
- * 
- * @return string
- */
-function ale_og_meta_image() {
-	echo ale_get_og_meta_image();
-}
-function ale_get_og_meta_image() {
-	global $post;
-	$thumbdone=false;
-	$og_image='';
-	
-	//Featured image
-	if (function_exists('get_post_thumbnail_id')) {
-		$attachment_id = get_post_thumbnail_id($post->ID);
-		if ($attachment_id) {
-			$og_image = wp_get_attachment_url($attachment_id, false);
-			$thumbdone = true;
-		}
-	}
-	
-	//From post/page content
-	if (!$thumbdone) {
-		$image = ale_parse_first_image($post->post_content);
-		if ($image) {
-			preg_match('~src="([^"]+)"~si', $image, $matches);
-			if (isset($matches[1])) {
-				$image = $matches[1];
-				$pos = strpos($image, site_url());
-				if ($pos === false) {
-					if (stristr($image, 'http://') || stristr($image, 'https://')) {
-						$og_image = $image;
-					} else {
-						$og_image = site_url() . $image;
-					}
-				} else {
-					$og_image = $image;
-				}
-				$thumbdone=true;
-			}
-		}
-	}
-	
-	//From media gallery
-	if (!$thumbdone) {
-		$image = ale_get_first_attached_image($post->ID);
-		if ($image) {
-			$og_image = wp_get_attachment_url($image->ID, false);
-			$thumbdone = true;
-		}
-	}
-	
-	return $og_image;
-}
 
 /**
  * Load Post AJAX Hook

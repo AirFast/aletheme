@@ -10,9 +10,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <style>body { opacity: 0; overflow-x: hidden; } html { background-color: #fff; }</style>
-
     <?php wp_head(); ?>
+
+    <style>body { opacity: 0; overflow-x: hidden; } html { background-color: #fff; }</style>
 </head>
 <body <?php body_class(); ?> >
 
