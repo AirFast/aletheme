@@ -1,21 +1,18 @@
 <!doctype html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" <?php language_attributes(); ?>> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" <?php language_attributes(); ?>> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" <?php language_attributes(); ?>> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" <?php language_attributes(); ?>> <!--<![endif]-->
+<html class="no-js" <?php language_attributes(); ?>
+
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
-	<title><?php wp_title('|', true, 'right'); bloginfo('name'); ?></title>
-	<?php wp_head(); ?>
 
-    <!-- Chrome, Firefox OS and Opera -->
-    <meta name="theme-color" content="#000">
-    <!-- Windows Phone -->
-    <meta name="msapplication-navbutton-color" content="#000">
-    <!-- iOS Safari -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="#000">
+	<title><?php wp_title('|', true, 'right'); bloginfo('name'); ?></title>
+    <meta name="description" content="<?php bloginfo('description'); ?>">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <style>body { opacity: 0; overflow-x: hidden; } html { background-color: #fff; }</style>
+
+    <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?> >
 

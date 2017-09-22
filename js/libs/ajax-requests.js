@@ -1,85 +1,48 @@
-jQuery(function($) {
-    "use strict";
-
-    // Custom jQuery Code Here
-
-    $('.portfolioslider').flexslider({
-        animation:'slide',
-        smoothHeight:true,
-        controlNav: false
+jQuery(function($){
+    $('#more-photos').click(function(){
+        var data = {
+            'action': 'load_more_photos',
+            'query': posts,
+            'page' : current_page
+        };
+        $.ajax({
+            url:window.wp_data.ajax_url, // обработчик
+            data:data, // данные
+            type:'POST', // тип запроса
+            success:function(data){
+                if( data ) {
+                    $('#gallery-content').append(data); // вставляем новые посты
+                    current_page++; // увеличиваем номер страницы на единицу
+                    if (current_page == max_pages) $('.btn.more-content').remove(); // если последняя страница, удаляем кнопку
+                } else {
+                    $('.btn.more-content').remove(); // если мы дошли до последней страницы постов, скроем кнопку
+                }
+            }
+        });
     });
 
-    $('.newhomeslider').flexslider({
-        animation:'slide',
-        smoothHeight:true,
-        controlNav: false
+    $('#load-more').click(function(){
+        var data = {
+            'action': 'load_more_post',
+            'query': posts,
+            'page' : current_page
+        };
+        $.ajax({
+            url:window.wp_data.ajax_url, // обработчик
+            data:data, // данные
+            type:'POST', // тип запроса
+            success:function(data){
+                if( data ) {
+                    $('#standard-content').append(data); // вставляем новые посты
+                    current_page++; // увеличиваем номер страницы на единицу
+                    if (current_page == max_pages) $('.btn.more-content').remove(); // если последняя страница, удаляем кнопку
+                } else {
+                    $('.btn.more-content').remove(); // если мы дошли до последней страницы постов, скроем кнопку
+                }
+            }
+        });
     });
-
 });
-
-Modernizr.addTest('ipad', function () {
-    return !!navigator.userAgent.match(/iPad/i);
-});
-
-Modernizr.addTest('iphone', function () {
-    return !!navigator.userAgent.match(/iPhone/i);
-});
-
-Modernizr.addTest('ipod', function () {
-    return !!navigator.userAgent.match(/iPod/i);
-});
-
-Modernizr.addTest('appleios', function () {
-    return (Modernizr.ipad || Modernizr.ipod || Modernizr.iphone);
-});
-
-Modernizr.addTest('positionfixed', function () {
-    var test    = document.createElement('div'),
-        control = test.cloneNode(false),
-        fake = false,
-        root = document.body || (function () {
-            fake = true;
-            return document.documentElement.appendChild(document.createElement('body'));
-        }());
-
-    var oldCssText = root.style.cssText;
-    root.style.cssText = 'padding:0;margin:0';
-    test.style.cssText = 'position:fixed;top:42px';
-    root.appendChild(test);
-    root.appendChild(control);
-
-    var ret = test.offsetTop !== control.offsetTop;
-
-    root.removeChild(test);
-    root.removeChild(control);
-    root.style.cssText = oldCssText;
-
-    if (fake) {
-        document.documentElement.removeChild(root);
-    }
-
-    /* Uh-oh. iOS would return a false positive here.
-     * If it's about to return true, we'll explicitly test for known iOS User Agent strings.
-     * "UA Sniffing is bad practice" you say. Agreeable, but sadly this feature has made it to
-     * Modernizr's list of undectables, so we're reduced to having to use this. */
-    return ret && !Modernizr.appleios;
-});
-
-
-// Modernizr.load loading the right scripts only if you need them
-Modernizr.load([
-    {
-        // Let's see if we need to load selectivizr
-        test : Modernizr.borderradius,
-        // Modernizr.load loads selectivizr and Respond.js for IE6-8
-        nope : [ale.template_dir + '/js/libs/selectivizr.min.js', ale.template_dir + '/js/libs/respond.min.js']
-    },{
-        test: Modernizr.touch,
-        yep:ale.template_dir + '/css/touch.css'
-    }
-]);
-
-
 
 jQuery(function($) {
     var is_single = $('#post').length;
@@ -348,43 +311,4 @@ jQuery(function($) {
     }
     $('#archives .ale-archives').init_archives();
 
-
-
-
-
-
 });
-
-// HTML5 Fallbacks for older browsers
-jQuery(function($) {
-    // check placeholder browser support
-    if (!Modernizr.input.placeholder) {
-        // set placeholder values
-        $(this).find('[placeholder]').each(function() {
-            $(this).val( $(this).attr('placeholder') );
-        });
-
-        // focus and blur of placeholders
-        $('[placeholder]').focus(function() {
-            if ($(this).val() == $(this).attr('placeholder')) {
-                $(this).val('');
-                $(this).removeClass('placeholder');
-            }
-        }).blur(function() {
-                if ($(this).val() == '' || $(this).val() == $(this).attr('placeholder')) {
-                    $(this).val($(this).attr('placeholder'));
-                    $(this).addClass('placeholder');
-                }
-            });
-
-        // remove placeholders on submit
-        $('[placeholder]').closest('form').submit(function() {
-            $(this).find('[placeholder]').each(function() {
-                if ($(this).val() == $(this).attr('placeholder')) {
-                    $(this).val('');
-                }
-            });
-        });
-    }
-});
-

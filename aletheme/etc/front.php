@@ -1,4 +1,107 @@
 <?php
+// Start - wp_head
+/**
+ * Add header meta information
+ */
+function airfast_head_info() {
+	?>
+	<!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#000">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#000">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#000">
+
+    <!-- favicon -->
+	<link rel="shortcut icon" href="<?php ale_favicon(); ?>" type="image/x-icon">
+	<link rel="apple-touch-icon" href="<?php ale_favicon(); ?>">
+	<link rel="apple-touch-icon" sizes="72x72" href="<?php ale_favicon(); ?>">
+	<link rel="apple-touch-icon" sizes="114x114" href="<?php ale_favicon(); ?>">
+
+	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
+	<link rel="alternate" type="application/rss+xml" title="<?php bloginfo('name'); ?> RSS Feed" href="<?php ale_rss(); ?>" />
+	<?php
+}
+add_action('wp_head', 'airfast_head_info');
+
+
+/**
+ *  Add Theme Custom Css
+ */
+function airfast_custom_css(){
+    ale_part('css-option');
+    if(ale_get_option('custom-css-code')) {
+        echo '<style type="text/css">' . ale_get_option('custom-css-code') . '</style>';
+    }
+}
+add_action('wp_head', 'airfast_custom_css');
+
+
+/**
+ * Add Theme JavaScript variables
+ */
+function airfast_enqueue_js_variables() {
+    $variables = array (
+        'ajax_url' => admin_url('admin-ajax.php'),
+        //'is_mobile' => wp_is_mobile()
+        // Тут обычно какие-то другие переменные
+    );
+    echo(
+        '<script type="text/javascript">window.wp_data = ' .
+        json_encode($variables) .
+        ';</script>'
+    );
+}
+add_action( 'wp_head', 'airfast_enqueue_js_variables' );
+
+// End - wp_head
+
+
+// Start - wp_footer
+/**
+ * Add Theme Styles
+ */
+function airfast_enqueue_styles() {
+
+	// add main css file
+	wp_register_style( 'airfast-main', THEME_URL . '/css/main.min.css', array(), ALETHEME_THEME_VERSION, 'all');
+	wp_enqueue_style( 'airfast-main' );
+
+	// add libs css file
+
+}
+add_action( 'wp_footer', 'airfast_enqueue_styles' );
+
+
+/**
+ * Add Theme Scripts
+ */
+function airfast_enqueue_scripts() {
+
+    // add main js file
+	wp_register_script( 'airfast-scripts', THEME_URL . '/js/scripts.min.js', array( 'jquery' ), ALETHEME_THEME_VERSION, true );
+	wp_enqueue_script( 'airfast-scripts' );
+
+	// add libs js file
+
+}
+add_action( 'wp_footer', 'airfast_enqueue_scripts' );
+
+
+/**
+ * Add footer information
+ */
+function airfast_footer_info() {
+	$info = trim(ale_get_option('footer_info'));
+	if ($info) {
+		echo $info;
+	}
+}
+add_action('wp_footer', 'airfast_footer_info');
+
+// End - wp_footer
+
+
 /**
  * This filter adds query for post search only.
  *
@@ -32,38 +135,7 @@ function ale_init_js_vars() {
 		)
 	);
 }
-add_action('wp_print_scripts', 'ale_init_js_vars');
-
-/**
- * Enqueue Theme Styles
- */
-function airfast_enqueue_styles() {
-
-	// add main css file
-	wp_register_style( 'aletheme_main_css', THEME_URL . '/css/main.min.css', array(), ALETHEME_THEME_VERSION, 'all');
-	wp_enqueue_style( 'aletheme_main_css' );
-
-	// add libs css file
-	//wp_register_style( 'jquery.jscrollpane', THEME_URL . '/css/jquery.jscrollpane.css', array(), ALETHEME_THEME_VERSION, 'all');
-    //wp_register_style( 'jquery.fancybox-1.3.4', THEME_URL . '/css/jquery.fancybox-1.3.4.css', array(), ALETHEME_THEME_VERSION, 'all');
-
-    //if(is_page_template('template-about.php') or is_page_template('template-award.php')){
-        //wp_enqueue_style('jquery.jscrollpane');
-    //}
-
-}
-//add_action( 'wp_enqueue_scripts', 'airfast_enqueue_styles' );
-add_action( 'wp_footer', 'airfast_enqueue_styles' );
-
-
-/**
- * Custom Css
- */
-function ale_customcss(){
-    ale_part('css-option');
-    if(ale_get_option('customcsscode')){ echo '<style type="text/css">'.ale_get_option('customcsscode').'</style>';}
-}
-add_action('wp_head', 'ale_customcss');
+//add_action('wp_print_scripts', 'ale_init_js_vars');
 
 
 /**
@@ -74,53 +146,6 @@ function is_blog () {
     $posttype = get_post_type($post );
     return ( ((is_archive()) || (is_author()) || (is_category()) || (is_home()) || (is_single()) || (is_tag())) && ( $posttype == 'post')  ) ? true : false ;
 }
-
-/**
- * Enqueue Theme Scripts
- */
-function ale_enqueue_scripts() {
-
-	// add html5 for old browsers.
-	wp_register_script( 'html5-shim', 'http://html5shim.googlecode.com/svn/trunk/html5.js', array( 'jquery' ), ALETHEME_THEME_VERSION, false );
-	// add modernizr
-	wp_register_script( 'ale_modernizr', THEME_URL . '/js/libs/modernizr-2.5.3.min.js', array( 'jquery' ), ALETHEME_THEME_VERSION, false );
-
-    wp_register_script( 'ale_modules', THEME_URL . '/js/modules.js', array( 'jquery' ), ALETHEME_THEME_VERSION, true );
-    wp_register_script( 'ale_scripts', THEME_URL . '/js/ale-scripts.js', array( 'jquery' ), ALETHEME_THEME_VERSION, true );
-
-	wp_enqueue_script( 'jquery-form' );
-	wp_enqueue_script( 'ale_modernizr' );
-	wp_enqueue_script( 'html5-shim' );
-
-    wp_register_script( 'jquery.mousewheel', THEME_URL . '/js/libs/jquery.mousewheel.js', array( 'jquery' ), ALETHEME_THEME_VERSION, true );
-    wp_register_script( 'jquery.fancybox', THEME_URL . '/js/libs/jquery.fancybox-1.3.4.pack.js', array( 'jquery' ), ALETHEME_THEME_VERSION, true );
-    wp_register_script( 'jquery.jscrollpane.min', THEME_URL . '/js/libs/jquery.jscrollpane.min.js', array( 'jquery' ), ALETHEME_THEME_VERSION, true );
-    wp_register_script( 'scrollable', THEME_URL . '/js/libs/scrollable.js', array( 'jquery' ), ALETHEME_THEME_VERSION, true );
-
-    wp_enqueue_script( 'jquery.mousewheel' );
-    wp_enqueue_script( 'jquery.fancybox' );
-    wp_enqueue_script( 'jquery.jscrollpane.min' );
-    wp_enqueue_script( 'scrollable' );
-    wp_enqueue_script( 'ale_modules' );
-	wp_enqueue_script( 'ale_scripts' );
-
-
-}
-add_action( 'wp_enqueue_scripts', 'ale_enqueue_scripts');
-
-/**
- * Add header information 
- */
-function ale_head() {
-	?>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	<link rel="shortcut icon" href="<?php ale_favicon(); ?>" />
-	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
-	<link rel="alternate" type="application/rss+xml" title="<?php bloginfo('name'); ?> RSS Feed" href="<?php ale_rss(); ?>" />
-	<?php
-}
-add_action('wp_head', 'ale_head');
-
 
 /**
  * Comment callback function
@@ -196,22 +221,6 @@ function aletheme_password_form() {
 	return $html;
 }
 add_filter( 'the_password_form', 'aletheme_password_form' );
-
-/**
- * Add footer information
- * Social Services Init 
- */
-function ale_footer() {
-	$info = trim(ale_get_option('footer_info'));
-	if ($info) {
-		echo $info;
-	}
-	?>
-	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-<?php
-}
-
-add_action('wp_footer', 'ale_footer');
 
 /**
  * Add Google Analytics Code

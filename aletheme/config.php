@@ -262,17 +262,6 @@ function aletheme_get_options() {
                         "id" => "ale_footermenutitle",
                         "std" => "Select a category",
                         "type" => "text");
-
-    $options[] = array( "name" => "Footer menu title",
-                        "desc" => "Insert the footer menu title",
-                        "id" => "ale_footermenutitle_1",
-                        "std" => "",
-                        "type" => "images",
-                        "options" => array(
-                            'image_1' => $imagepath.'/1col.png',
-                            'image_2' => $imagepath.'/2cl.png',
-                            'image_3' => $imagepath.'/2cr.png', ),
-        );
 	
 	return $options;
 }
