@@ -297,7 +297,6 @@ function aletheme_metaboxes($meta_boxes) {
 
     $prefix = "ale_";
 
-
     $meta_boxes[] = array(
         'id'         => 'home_page_metabox',
         'title'      => 'Home Meta Options',
@@ -783,6 +782,31 @@ function aletheme_metaboxes($meta_boxes) {
         )
     );
 
+    $meta_boxes[] = array(
+        'id'         => 'services_metabox',
+        'title'      => 'Services Meta Options',
+        'pages'      => array( 'services', ), // Post type
+        'context'    => 'normal',
+        'priority'   => 'high',
+        'show_names' => true, // Show field names on the left
+        //'show_on'    => array( 'key' => 'page-template', 'value' => array('page-home.php'), ), // Specific post templates to display this metabox
+
+        'fields' => array(
+            array(
+                'name' => 'Description',
+                'desc' => 'Insert the text',
+                'id'   => $prefix . 'descr1',
+                'type' => 'textarea',
+            ),
+            array(
+                'name' => 'Price',
+                'desc' => 'Insert the text',
+                'id'   => $prefix . 'descr2',
+                'type' => 'text',
+            ),
+        )
+    );
+
 	return $meta_boxes;
 }
 
@@ -851,6 +875,8 @@ function aletheme_get_post_types() {
                     'thumbnail',
                 ),
                 'show_in_nav_menus'=> true,
+                'description' => 'This is description', //$obj = get_post_type_object( 'gallery' );
+                                                        //echo $obj->description;
             ),
             'singular' => 'Gallery',
             'multiple' => 'Galleries',
@@ -908,7 +934,7 @@ function aletheme_get_taxonomies() {
             'multiple'    => 'Категории',
         ),
         'price'    => array(
-            'for'        => array('services'),
+            'for'        => array('page'),
             'config'    => array(
                 'sort'        => true,
                 'args'        => array('orderby' => 'term_order'),
@@ -917,6 +943,7 @@ function aletheme_get_taxonomies() {
             'singular'    => 'Цена сервиса',
             'multiple'    => 'Цены сервисов',
         ),
+
     );
 }
 

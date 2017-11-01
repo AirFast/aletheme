@@ -25,3 +25,7 @@ if ( is_readable($locale_file) )
  * If you want to add custom functions you should do manual
  * updates only.
  ****************************************************************/
+/**
+ * load TGM Plugins
+ */
+//require get_template_directory() . '/tgm/theme-required-plugins.php';

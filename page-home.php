@@ -16,6 +16,8 @@ if ($custom_query->have_posts()) : while ($custom_query->have_posts()) : $custom
     <div class="h2" ><?php the_title(); ?></div>
     <div class="contact-content">
         <?php the_content(); ?>
+        <p><?php echo ale_get_meta('descr1'); ?></p>
+        <p><?php echo ale_get_meta('descr2'); ?></p>
     </div>
 <?php endwhile; endif; ?>
 

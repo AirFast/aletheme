@@ -310,7 +310,7 @@ function ale_init_js_vars() {
  */
 function is_blog () {
     global  $post;
-    $posttype = get_post_type($post );
+    $posttype = get_post_type($post);
     return ( ((is_archive()) || (is_author()) || (is_category()) || (is_home()) || (is_single()) || (is_tag())) && ( $posttype == 'post')  ) ? true : false ;
 }
 
